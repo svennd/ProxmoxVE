@@ -1,23 +1,31 @@
-* [Home (Overview)](Home)
-* [Getting Started](Getting-Started)
-* [Contributing](Contributing)
-* [Installation and Setup](Installation-and-Setup)
-* [FAQ (Frequently Asked Questions)](FAQ)
-* [Coding Standards](Coding-Standards)
+# Table of Contents
 
-## Documentation
-* [Templates](Templates)
-* [Best Practices](Best-Practices)
+## Getting Started
+- [Overview](docs/Home.md)
+- [Getting Started Guide](docs/getting-started.md)
+- [Installation and Setup](docs/installation.md)
+
+## Contributing
+- [Contributing Guidelines](docs/contributing.md)
+- [Pull Request Template](docs/pull-request-template.md)
+- [How to Report Bugs](docs/report-bug.md)
 
 ## Scripts
-* [Script 1](scripts/script1.md)
-* [Script 2](scripts/script2.md)
+- [Proxmox Scripts](docs/proxmox-scripts.md)
+- [LXC Installation](docs/lxc-installation.md)
+- [Service Configuration](docs/service-configuration.md)
 
-## Troubleshooting
-* [Common Issues](Troubleshooting/Common-Issues)
-* [Error Codes](Troubleshooting/Error-Codes)
+## Coding Standards
+- [Coding Standards](docs/coding-standards.md)
+- [Best Practices](docs/best-practices.md)
 
-## Related Links
-* [Community Discussions](https://github.com/community-scripts/ProxmoxVE/discussions)
-* [Repository Home](https://github.com/community-scripts/ProxmoxVE)
-* [Release Notes](https://github.com/community-scripts/ProxmoxVE/releases)
+## Frequently Asked Questions
+- [FAQ](docs/faq.md)
+- [Troubleshooting](docs/troubleshooting.md)
+
+## License
+- [License Information](docs/license.md)
+
+## Links
+- [Official GitHub Repository](https://github.com/community-scripts/ProxmoxVE)
+- [Community Discord Server](https://discord.gg/UHrpNWGwkH)
