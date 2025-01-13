@@ -36,7 +36,7 @@ Before contributing, please ensure that you have the following setup:
 
 # 🚀 The Application Script (ct/AppName.sh)
 
-- You can find all coding standards, as well as the structure for this file [here](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_GUIDE/ct/AppName.md).
+- You can find all coding standards, as well as the structure for this file [here](https://github.com/community-scripts/ProxmoxVE/wiki/AppName.sh-Scripts).
 - These scripts are responsible for container creation, setting the necessary variables and handling the update of the application once installed.
 
 ---
