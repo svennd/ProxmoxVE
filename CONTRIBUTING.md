@@ -4,15 +4,6 @@
 ## **Welcome to the communty-scripts Repository!** 
 📜 These documents outline the essential coding standards for all our scripts and JSON files. Adhering to these standards ensures that our codebase remains consistent, readable, and maintainable. By following these guidelines, we can improve collaboration, reduce errors, and enhance the overall quality of our project.
 
-### Why Coding Standards Matter
-
-Coding standards are crucial for several reasons:
-
-1. **Consistency**: Consistent code is easier to read, understand, and maintain. It helps new team members quickly get up to speed and reduces the learning curve.
-2. **Readability**: Clear and well-structured code is easier to debug and extend. It allows developers to quickly identify and fix issues.
-3. **Maintainability**: Code that follows a standard structure is easier to refactor and update. It ensures that changes can be made with minimal risk of introducing new bugs.
-4. **Collaboration**: When everyone follows the same standards, it becomes easier to collaborate on code. It reduces friction and misunderstandings during code reviews and merges.
-
 ### Scope of These Documents
 
 These documents cover the coding standards for the following types of files in our project:
