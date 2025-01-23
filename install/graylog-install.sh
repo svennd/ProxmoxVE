@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-
-#Copyright (c) 2021-2025 community-scripts ORG
-# Author: Michel Roegl-Brunner (michelroegl-brunner)
+# Copyright (c) 2021-2025 community-scripts ORG
+# Author: SvennD
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 
@@ -15,94 +14,55 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
-$STD apt-get install -y \
-  curl \
-  composer \
-  git \
-  sudo \
-  mc \
-  nginx \
-  php8.2-{bcmath,common,ctype,curl,fileinfo,fpm,gd,iconv,intl,mbstring,mysql,soap,xml,xsl,zip,cli} \
-  mariadb-server 
+msg_info "Installing mongodb"
+        $STD timedatectl set-timezone UTC
+        $STD apt-get install -y \
+        gnupg\
+        curl
+        $STD curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+        gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
+        $STD echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+        $STD apt-get update
+        $STD apt-get install -y mongodb-org
+        $STD systemctl daemon-reload
+        $STD systemctl enable mongod.service
+        $STD systemctl restart mongod.service
+
+        # set a hold
+        $STD apt-mark hold mongodb-org
 msg_ok "Installed Dependencies"
 
-msg_info "Setting up database"
-DB_NAME=snipeit_db
-DB_USER=snipeit
-DB_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
-mysql -u root -e "CREATE DATABASE $DB_NAME;"
-mysql -u root -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED WITH mysql_native_password AS PASSWORD('$DB_PASS');"
-mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;"
-{
-    echo "SnipeIT-Credentials"
-    echo "SnipeIT Database User: $DB_USER"
-    echo "SnipeIT Database Password: $DB_PASS"
-    echo "SnipeIT Database Name: $DB_NAME"
-} >> ~/snipeit.creds
-msg_ok "Set up database"
+msg_info "install Data Node"
+        $STD wget https://packages.graylog2.org/repo/packages/graylog-6.1-repository_latest.deb
+        $STD dpkg -i graylog-6.1-repository_latest.deb
+        $STD apt-get update
+        $STD apt-get install graylog-datanode -y
 
-msg_info "Installing Snipe-IT"
-cd /opt
-RELEASE=$(curl -s https://api.github.com/repos/snipe/snipe-it/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
-wget -q "https://github.com/snipe/snipe-it/archive/refs/tags/v${RELEASE}.zip"
-unzip -q v${RELEASE}.zip
-mv snipe-it-${RELEASE} /opt/snipe-it
+        SECRET=$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-96};echo;)
+        PASSWORD=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
+        HASH=$(echo -n $PASSWORD | sha256sum | awk '{print $1}')
+        sed -i -e "s/password_secret =.*/password_secret = $SECRET/" /etc/graylog/datanode/datanode.conf
+        sed -i -e "s/root_password_sha2 =.*/root_password_sha2 = $HASH/" /etc/graylog/datanode/datanode.conf
+        $STD systemctl enable graylog-datanode.service
+        $STD systemctl start graylog-datanode
+msg_ok "Installed Graylog Data Node"
 
-cd /opt/snipe-it
-cp .env.example .env
-IPADDRESS=$(hostname -I | awk '{print $1}')
+msg_info "Installed Graylog"
+        $STD apt-get install graylog-enterprise
 
-sed -i -e "s|^APP_URL=.*|APP_URL=http://$IPADDRESS|" \
-       -e "s|^DB_DATABASE=.*|DB_DATABASE=$DB_NAME|" \
-       -e "s|^DB_USERNAME=.*|DB_USERNAME=$DB_USER|" \
-       -e "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASS|" .env
+        sed -i -e "s/password_secret =.*/password_secret = $SECRET/" /etc/graylog/server/server.conf
+        sed -i -e "s/root_password_sha2 =.*/root_password_sha2 = $HASH/" /etc/graylog/server/server.conf
+        sed -i 's/#http_bind_address = 127.0.0.1.*/http_bind_address = 0.0.0.0:9000/g' /etc/graylog/server/server.conf
 
-chown -R www-data: /opt/snipe-it
-chmod -R 755 /opt/snipe-it
-
-
-export COMPOSER_ALLOW_SUPERUSER=1
-$STD composer update --no-plugins --no-scripts
-$STD composer install --no-dev --prefer-source --no-plugins --no-scripts
-
-$STD php artisan key:generate --force
-msg_ok "Installed SnipeIT"
-
-msg_info "Creating Service"
-
-cat <<EOF >/etc/nginx/conf.d/snipeit.conf
-server {
-        listen 80;
-        root /opt/snipe-it/public;
-        server_name $IPADDRESS; 
-        index index.php;
-                
-        location / {
-                try_files \$uri \$uri/ /index.php?\$query_string;
-        }
-        
-        location ~ \.php\$ {
-                include fastcgi.conf;
-                include snippets/fastcgi-php.conf;
-                fastcgi_pass unix:/run/php/php8.2-fpm.sock;
-                fastcgi_split_path_info ^(.+\.php)(/.+)\$;
-                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                include fastcgi_params;
-        }
-}
-EOF
-
-systemctl reload nginx
-msg_ok "Configured Service"
-
+        $STD systemctl daemon-reload
+        $STD systemctl enable graylog-server.service
+        $STD systemctl start graylog-server
+msg_ok "Installed Graylog"
 
 motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm -rf /opt/v${RELEASE}.zip
-$STD apt-get -y autoremove
-$STD apt-get -y autoclean
+        $STD apt-get -y autoremove
+        $STD apt-get -y autoclean
 msg_ok "Cleaned"
