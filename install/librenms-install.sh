@@ -29,6 +29,9 @@ msg_info "Installing Dependencies"
 
     # system user is required
     $STD useradd librenms -d /opt/librenms -M -r
+
+    # set timezone
+    $STD timedatectl set-timezone Etc/UTC
 msg_ok "Installed Dependencies"
 
 
@@ -39,6 +42,9 @@ msg_info "php config"
         -e "s|^listen = /run/php/php8.2-fpm.sock|listen = /run/php/librenms.sock|" \
         -e "s|^user = www-data|user = librenms|" \
         -e "s|^group = www-data|group = librenms|" /etc/php/8.2/fpm/pool.d/librenms.conf
+    
+    # set timezone
+    sed -i 's/^;date\.timezone =/date.timezone = Etc\/UTC/' /etc/php/8.2/fpm/php.ini
 
     systemctl restart php8.2-fpm
 msg_ok "php config"
@@ -56,8 +62,8 @@ msg_info "download librenms"
 
     # scheduler
     cp /opt/librenms/dist/librenms-scheduler.service /opt/librenms/dist/librenms-scheduler.timer /etc/systemd/system/
-    systemctl enable librenms-scheduler.timer
-    systemctl start librenms-scheduler.timer
+    $STD systemctl enable librenms-scheduler.timer
+    $STD systemctl start librenms-scheduler.timer
 
 msg_ok "download librenms"
 
