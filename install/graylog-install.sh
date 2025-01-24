@@ -16,12 +16,9 @@ update_os
 
 msg_info "Installing mongodb"
         $STD timedatectl set-timezone UTC
-        $STD apt-get install -y \
-        gnupg\
-        curl
-        
+        $STD apt-get install -y gnupg curl
         curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
-        $STD echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+        $STD echo "deb [signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" > /etc/apt/sources.list.d/mongodb-org-7.0.list
         $STD apt-get update
         $STD apt-get install -y mongodb-org
         $STD systemctl daemon-reload
@@ -37,6 +34,7 @@ msg_info "install Data Node"
         $STD dpkg -i graylog-6.1-repository_latest.deb
         $STD apt-get update
         $STD apt-get install graylog-datanode -y
+        $STD rm graylog-6.1-repository_latest.deb
 
         SECRET=$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-96};echo;)
         PASSWORD=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c13)
