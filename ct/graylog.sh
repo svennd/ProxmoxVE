@@ -4,11 +4,11 @@ source <(curl -s https://raw.githubusercontent.com/svennd/ProxmoxVE/refs/heads/g
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: SvennD
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
-# Source: https://snipeitapp.com/
+# Source: https://graylog.org/
 
 # App Default Values
-APP="SnipeIT"
-var_tags="assat-management;foss"
+APP="Graylog"
+var_tags="logging"
 var_cpu="2"
 var_ram="4096"
 var_disk="10"
