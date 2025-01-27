@@ -168,7 +168,7 @@ if [[ ! -d /opt/snipe-it ]]; then
 
 ### 3.3 **Check version**
 
-- Befoer updating, check if a new version exists.
+- Before updating, check if a new version exists.
   - We use the `${APPLICATION}_version.txt` file created in `/opt` during the install to compare new versions against the currently installed version.
 
 Example with a Github Release:
