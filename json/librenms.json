@@ -4,7 +4,7 @@
     "categories": [
       9
     ],
-    "date_created": "2025-01-24",
+    "date_created": "2025-01-27",
     "type": "ct",
     "updateable": false,
     "privileged": false,
@@ -12,7 +12,7 @@
     "documentation": "https://docs.librenms.org",
     "website": "https://www.librenms.org",
     "logo": "https://raw.githubusercontent.com/librenms/librenms/33dbd98d7302091fdadcdbd66fec9d38808d82ce/html/images/librenms_logo_dark.svg",
-    "description": "LibreNMS, a fully featured network monitoring system that provides a wealth of features and device support.",
+    "description": "LibreNMS is an auto-discovering PHP/MySQL/SNMP based network monitoring which includes support for a wide range of network hardware and operating systems including Cisco, Linux, FreeBSD, Juniper, Brocade, Foundry, HP and many more.",
     "install_methods": [
       {
         "type": "default",
