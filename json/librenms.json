@@ -31,9 +31,5 @@
       "password": null
     },
     "notes": [
-      {
-          "text": "After install you can follow the web installer to complete the install.",
-          "type": "info"
-      }
   ]
 }
