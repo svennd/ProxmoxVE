@@ -25,15 +25,15 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
-  if [[ ! -d /opt/librenms ]]; then
-    msg_error "No ${APP} Installation Found!"
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -d /opt/librenms ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+    msg_error "${APP} updates itself using a daily cron."
     exit
-  fi
-  msg_ok "${APP} automatically updated!"
-  exit
 }
 
 start
